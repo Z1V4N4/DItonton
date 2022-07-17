@@ -1,7 +1,9 @@
-import 'package:ditonton/common/state_enum.dart';
-import 'package:ditonton/presentation/provider/top_rated_tvseries_notifier.dart';
+import 'package:ditonton/presentation/bloc/tvseries_top_rated/tvseries_top_rated_bloc.dart';
+import 'package:ditonton/presentation/bloc/tvseries_top_rated/tvseries_top_rated_event.dart';
+import 'package:ditonton/presentation/bloc/tvseries_top_rated/tvseries_top_rated_state.dart';
 import 'package:ditonton/presentation/widgets/tvseries_card_list.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
 class TopRatedTvseriesPage extends StatefulWidget {
@@ -16,8 +18,8 @@ class _TopRatedTvseriesPageState extends State<TopRatedTvseriesPage> {
   void initState() {
     super.initState();
     Future.microtask(() =>
-        Provider.of<TopRatedTvseriesNotifier>(context, listen: false)
-            .fetchTopRatedTvseries());
+        Provider.of<TvseriesTopRatedBloc>(context, listen: false)
+            .add(GetTvseriesTopRatedEvent()));
   }
 
   @override
@@ -28,25 +30,31 @@ class _TopRatedTvseriesPageState extends State<TopRatedTvseriesPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Consumer<TopRatedTvseriesNotifier>(
-          builder: (context, data, child) {
-            if (data.state == RequestState.Loading) {
+        child: BlocBuilder<TvseriesTopRatedBloc, TvseriesTopRatedState>(
+          builder: (context, state) {
+            if(state is TopRatedListEmpty) {
+              context.read<TvseriesTopRatedBloc>().add(GetTvseriesTopRatedEvent());
+            }
+            if (state is TopRatedListLoading) {
               return Center(
                 child: CircularProgressIndicator(),
               );
-            } else if (data.state == RequestState.Loaded) {
+            } else if (state is TopRatedListHasData) {
+              final result = state.result;
               return ListView.builder(
+                padding: const EdgeInsets.all(8),
                 itemBuilder: (context, index) {
-                  final tvseries = data.tvseries[index];
+                  final tvseries = result[index];
                   return TvSeriesCard(tvseries);
                 },
-                itemCount: data.tvseries.length,
+                itemCount: result.length,
+              );
+            } else if (state is TopRatedListError) {
+              return Center(
+                child: Text(state.message),
               );
             } else {
-              return Center(
-                key: Key('error_message'),
-                child: Text(data.message),
-              );
+              return Container();
             }
           },
         ),

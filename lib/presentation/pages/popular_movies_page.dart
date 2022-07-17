@@ -1,7 +1,9 @@
-import 'package:ditonton/common/state_enum.dart';
-import 'package:ditonton/presentation/provider/popular_movies_notifier.dart';
+import 'package:ditonton/presentation/bloc/movie_popular/movie_popular_bloc.dart';
+import 'package:ditonton/presentation/bloc/movie_popular/movie_popular_event.dart';
+import 'package:ditonton/presentation/bloc/movie_popular/movie_popular_state.dart';
 import 'package:ditonton/presentation/widgets/movie_card_list.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
 class PopularMoviesPage extends StatefulWidget {
@@ -12,12 +14,11 @@ class PopularMoviesPage extends StatefulWidget {
 }
 
 class _PopularMoviesPageState extends State<PopularMoviesPage> {
-  @override
   void initState() {
     super.initState();
     Future.microtask(() =>
-        Provider.of<PopularMoviesNotifier>(context, listen: false)
-            .fetchPopularMovies());
+        Provider.of<MoviesPopularBloc>(context, listen: false)
+            .add(GetMoviesPopularEvent()));
   }
 
   @override
@@ -28,25 +29,31 @@ class _PopularMoviesPageState extends State<PopularMoviesPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Consumer<PopularMoviesNotifier>(
-          builder: (context, data, child) {
-            if (data.state == RequestState.Loading) {
+        child: BlocBuilder<MoviesPopularBloc, MoviesPopularState>(
+          builder: (context, state) {
+            if (state is PopularListEmpty) {
+              context.read<MoviesPopularBloc>().add(GetMoviesPopularEvent());
+            }
+            if (state is PopularListLoading) {
               return Center(
                 child: CircularProgressIndicator(),
               );
-            } else if (data.state == RequestState.Loaded) {
+            } else if (state is PopularListHasData) {
+              final result = state.result;
               return ListView.builder(
+                padding: const EdgeInsets.all(8),
                 itemBuilder: (context, index) {
-                  final movie = data.movies[index];
+                  final movie = result[index];
                   return MovieCard(movie);
                 },
-                itemCount: data.movies.length,
+                itemCount: result.length,
+              );
+            } else if (state is PopularListError) {
+              return Center(
+                child: Text(state.message),
               );
             } else {
-              return Center(
-                key: Key('error_message'),
-                child: Text(data.message),
-              );
+              return Container();
             }
           },
         ),

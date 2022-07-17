@@ -1,7 +1,9 @@
-import 'package:ditonton/common/state_enum.dart';
-import 'package:ditonton/presentation/provider/tvseries_now_airing_notifier.dart';
+import 'package:ditonton/presentation/bloc/tvseries_now_airing/tvseries_now_airing_bloc.dart';
+import 'package:ditonton/presentation/bloc/tvseries_now_airing/tvseries_now_airing_event.dart';
+import 'package:ditonton/presentation/bloc/tvseries_now_airing/tvseries_now_airing_state.dart';
 import 'package:ditonton/presentation/widgets/tvseries_card_list.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
 class NowAiringTvseriesPage extends StatefulWidget {
@@ -16,8 +18,8 @@ class _NowAiringTvseriesPageState extends State<NowAiringTvseriesPage> {
   void initState() {
     super.initState();
     Future.microtask(() =>
-        Provider.of<TvseriesNowAiringNotifier>(context, listen: false)
-            .fetchNowAiringTvseries());
+        Provider.of<TvseriesNowAiringBloc>(context, listen: false)
+            .add(GetTvseriesNowAiringEvent()));
   }
 
   @override
@@ -28,25 +30,30 @@ class _NowAiringTvseriesPageState extends State<NowAiringTvseriesPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Consumer<TvseriesNowAiringNotifier>(
-          builder: (context, data, child) {
-            if (data.state == RequestState.Loading) {
+        child: BlocBuilder<TvseriesNowAiringBloc, TvseriesNowAiringState>(
+          builder: (context, state) {
+            if (state is NowAiringListEmpty) {
+            }
+            if (state is NowAiringListLoading) {
               return Center(
                 child: CircularProgressIndicator(),
               );
-            } else if (data.state == RequestState.Loaded) {
+            } else if (state is NowAiringListHasData) {
+              final result = state.result;
               return ListView.builder(
+                padding: const EdgeInsets.all(8),
                 itemBuilder: (context, index) {
-                  final tvseries = data.tvseries[index];
+                  final tvseries = result[index];
                   return TvSeriesCard(tvseries);
                 },
-                itemCount: data.tvseries.length,
+                itemCount: result.length,
+              );
+            } else if (state is NowAiringListError) {
+              return Center(
+                child: Text(state.message),
               );
             } else {
-              return Center(
-                key: Key('error_message'),
-                child: Text(data.message),
-              );
+              return Container();
             }
           },
         ),
