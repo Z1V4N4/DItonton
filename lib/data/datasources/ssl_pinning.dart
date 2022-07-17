@@ -20,7 +20,7 @@ class SSLPinning {
     if (isTestMode) {
       bytes = utf8.encode(_certificatedString);
     } else {
-      bytes = (await rootBundle.load('certificates/certificates.cer')).buffer.asUint8List();
+      bytes = (await rootBundle.load('certificates/certificate.cer')).buffer.asUint8List();
     }
     //bytes = (await rootBundle.load('certificates/certificates.cer')).buffer.asUint8List();
     context.setTrustedCertificatesBytes(bytes);
