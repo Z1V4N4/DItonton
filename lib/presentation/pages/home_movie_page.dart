@@ -135,10 +135,8 @@ class _HomeMoviePageState extends State<HomeMoviePage> {
                     final result = state.result;
                     return MovieList(result);
                   } else if (state is PopularListError) {
-                    return Expanded(
-                      child: Center(
-                        child: Text(state.message),
-                      ),
+                    return Center(
+                      child: Text(state.message),
                     );
                   } else {
                     return Text('Failed');
@@ -163,10 +161,8 @@ class _HomeMoviePageState extends State<HomeMoviePage> {
                     final result = state.result;
                     return MovieList(result);
                   } else if (state is TopRatedListError) {
-                    return Expanded(
-                      child: Center(
-                        child: Text(state.message),
-                      ),
+                    return Center(
+                      child: Text(state.message),
                     );
                   } else {
                     return Text('Failed');
