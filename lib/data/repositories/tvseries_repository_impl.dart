@@ -27,6 +27,8 @@ class TvseriesRepositoryImpl implements TvseriesRepository {
       return Left(ServerFailure(''));
     } on SocketException {
       return Left(ConnectionFailure('Failed to connect to the network'));
+    } on TlsException{
+      return Left(SSLFailure('CERTIFICATE_VERIFY_FAILED'));
     }
   }
 
@@ -39,6 +41,8 @@ class TvseriesRepositoryImpl implements TvseriesRepository {
       return Left(ServerFailure(''));
     } on SocketException {
       return Left(ConnectionFailure('Failed to connect to the network'));
+    } on TlsException{
+      return Left(SSLFailure('CERTIFICATE_VERIFY_FAILED'));
     }
   }
 
@@ -51,6 +55,8 @@ class TvseriesRepositoryImpl implements TvseriesRepository {
       return Left(ServerFailure(''));
     } on SocketException {
       return Left(ConnectionFailure('Failed to connect to the network'));
+    } on TlsException{
+      return Left(SSLFailure('CERTIFICATE_VERIFY_FAILED'));
     }
   }
 
@@ -63,6 +69,8 @@ class TvseriesRepositoryImpl implements TvseriesRepository {
       return Left(ServerFailure(''));
     } on SocketException {
       return Left(ConnectionFailure('Failed to connect to the network'));
+    } on TlsException{
+      return Left(SSLFailure('CERTIFICATE_VERIFY_FAILED'));
     }
   }
 
@@ -75,6 +83,8 @@ class TvseriesRepositoryImpl implements TvseriesRepository {
       return Left(ServerFailure(''));
     } on SocketException {
       return Left(ConnectionFailure('Failed to connect to the network'));
+    } on TlsException{
+      return Left(SSLFailure('CERTIFICATE_VERIFY_FAILED'));
     }
   }
 
@@ -87,6 +97,8 @@ class TvseriesRepositoryImpl implements TvseriesRepository {
       return Left(ServerFailure(''));
     } on SocketException {
       return Left(ConnectionFailure('Failed to connect to the network'));
+    } on TlsException{
+      return Left(SSLFailure('CERTIFICATE_VERIFY_FAILED'));
     }
   }
 
