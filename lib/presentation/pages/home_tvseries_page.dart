@@ -109,10 +109,8 @@ class _HomeTvseriesPageState extends State<HomeTvseriesPage> {
                     final result = state.result;
                     return TvseriesList(result);
                   } else if (state is NowAiringListError) {
-                    return Expanded(
-                      child: Center(
-                        child: Text(state.message),
-                      ),
+                    return Center(
+                      child: Text(state.message),
                     );
                   } else {
                     return Text('Failed');
@@ -137,10 +135,8 @@ class _HomeTvseriesPageState extends State<HomeTvseriesPage> {
                     final result = state.result;
                     return TvseriesList(result);
                   } else if (state is PopularListError) {
-                    return Expanded(
-                      child: Center(
-                        child: Text(state.message),
-                      ),
+                    return Center(
+                      child: Text(state.message),
                     );
                   } else {
                     return Text('Failed');
@@ -165,10 +161,8 @@ class _HomeTvseriesPageState extends State<HomeTvseriesPage> {
                     final result = state.result;
                     return TvseriesList(result);
                   } else if (state is TopRatedListError) {
-                    return Expanded(
-                      child: Center(
-                        child: Text(state.message),
-                      ),
+                    return Center(
+                      child: Text(state.message),
                     );
                   } else {
                     return Text('Failed');
